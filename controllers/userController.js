@@ -109,8 +109,6 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-
-
     
     // Compare password with the hashed password
     if (user && (await bcrypt.compare(password, user.password))) {
