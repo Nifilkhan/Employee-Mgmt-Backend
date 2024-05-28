@@ -1,0 +1,15 @@
+<div class="container-delet" id="deletEvaluation">
+    <div class="form-delet">
+        <div class="head">
+            <h4>Delete Employee</h4>
+            <button class="btn-exit" onclick="cancelDelet ()"><i class="fa-solid fa-x"></i></button>
+        </div>
+        <div><p class="confirmation-text py-3 ">Are you sure you want to delete this employee?</p></div>
+        <div class="form-btn d-flex flex-row py-4 ">
+            <button class="filled-btn cancel" onclick="cancelDelet ()">Cancel</button>
+            <button class="filled-btn delet" id="deletBtn" onclick="deleteEmployee()">Delete</button>
+      </div>
+    </div>
+    
+</div>
+<div class="overlay-main" id="overlayMain" onclick="cancelDelet ()"></div>

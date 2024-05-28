@@ -1,0 +1,42 @@
+<%- include('layouts/indexHeader')%>
+<div class="main-container">
+<%- include('layouts/sidebar')%> 
+
+<%- include('layouts/mainPage')%>
+</div>
+
+<!-- pagination-end -->
+
+<!-- add employe form start -->
+<%- include('layouts/addEmployee')%>
+
+<div class="overlay" id="overlay" onclick="closeEmployee()"></div>
+
+<!-- add employe form end-->
+
+<!-- edit form start -->
+<%- include('layouts/editEmployee')%>
+
+<!-- edit form end -->
+
+<!-- employe form delet confirmation start-->
+
+<%- include('layouts/deleteEmployee')%>
+
+<div class="overlay-main" id="overlayMain"></div>
+
+<!-- employe form delet confirmation end-->
+<!-- employee deleted succesfully popup-->
+<div class="overlayDeleteSuccess" id="overlayDelete"></div>
+<div id="deleteOpenModal" class="deleteSuccesfull">
+  <i class="fa-solid fa-trash" id="deleteBin"></i>
+  <h4>Employee Deleted succesfully</h4>
+  <button type="submit" class="deleteSuccesfullButton" id="popupModal" onclick="deletSuccess()">
+    OK
+  </button>
+</div>
+
+<!-- form-view start -->
+
+<!-- form-view end -->
+<%- include('layouts/indexFooter')%>

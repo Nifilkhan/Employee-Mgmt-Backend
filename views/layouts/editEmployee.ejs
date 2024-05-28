@@ -1,0 +1,139 @@
+<div class="container-form-edit" id="editEmployee">
+    <div class="main-form col-12 bg-white">
+      <div class="header-content d-flex flex-row ">
+        <h4 class="heading">Edit Employee </h4>
+        <button class="btn-exit" onclick="closeForm()"><i class="fa-solid fa-x"></i></button>
+      </div>
+      <div class="hero">
+        <label for="input-file" id="drop-area">
+            <input type="file" name="avatar" accept="image/*" id="input-file" hidden>
+            <div id="editimg-view" class="edit d-flex flex-row text-danger ">
+                <img id="editImage" src="icon/upload (2).png">
+            </div>
+        </label>
+    </div>
+    <form>
+      <div class="row justify-content-between p-2 ">
+        <div class=" col-2 input-control pt-2  ">
+            <label class="form_labels" for="editSalutation" >Salutation</label>
+            <select class="form-select p-2 px-3" aria-label="Default select example" id="editSalutation">
+                <option >select</option>
+                <option value="mr">mr</option>
+                <option value="ms">ms</option>
+                <option value="mrs">mrs</option>
+            </select>
+            <p class="error" id="editSalutationError"></p>
+        </div>
+        <div class="col-5 input-control  pt-2   ">
+            <label class="form_labels" for="editFirstname">First name</label>
+            <input type="text" class="form-control p-2 px-3" id="editFirstname" placeholder="John">
+            <p class="error" id="editFirstnameError"></p>
+        </div>
+        <div class="col-5 input-control pt-2  ">
+            <label class="form_labels" for="editLastname">Last name</label>
+            <input type="text" class="form-control p-2 px-3" id="editLastname" placeholder="doe">
+            <p class="error" id="editLastnameError"></p>
+        </div>
+    </div>
+    <div class="row p-2 ">
+        <div class="col-6 pt-2 input-control  ">
+            <label class="form_labels" for="editEmail">Email Address</label>
+            <input type="email" class="form-control p-2 px-3" id="editEmail" placeholder="mail@simmmple.com">
+            <p class="error" id="editEmailError"></p>
+        </div>
+        <div class="col-6 input-control pt-2 ">
+            <label class="form_labels" for="editMobileNumber">Mobile Number</label>
+            <input class="form-control p-2 px-3" type="text" placeholder="enter mobile number" aria-label="default input example" id="editMobileNumber">
+            <p class="error" id="editMobileNumberError"></p>
+        </div>
+    </div>
+    <div class="row p-2 ">
+      <div class="col-6 input-control">
+          <label class="form_labels" for="editUserName" >User name</label>
+          <input type="username" class="form-control p-2 px-3" id="editUserName" placeholder="username">
+          <p class="error" id="editUserNameError"></p>
+      </div>
+      <div class="col-6 input-control">
+           <label class="form_labels" for="editPassword">Password</label>
+            <input type="password" class="form-control p-2 px-3" id="editPassword" placeholder="password">
+            <p class="error" id="editPasswordError"></p>
+      </div>
+    </div>
+    <div class="row p-2 ">
+        <div class="col-6 pt-2 input-control  ">
+            <label class="form_labels" for="editDateOfBirth">Date of Birth</label>
+            <input type="date" class="form-control p-2 px-3"  placeholder="select date of birth" id="editDateOfBirth" onchange="clearMessage()">
+            <p class="error" id="editDateofbirthError"></p>
+        </div>
+        <div class="col-6 pt-2 input-control ">
+            <label class="form_labels" for="editGender">Gender</label> 
+            <div class=" d-flex gap-2">
+                <div class="form-check d-flex align-items-center mt-2 gap-2">
+                    <input class="form-check-input" type="radio" name="editgender" id="editMale" value="Male" >
+                    <label class="form-check-label " for="Male">Male</label>
+                </div>
+                <div class="form-check d-flex align-items-center mt-2 gap-2">
+                    <input class="form-check-input" type="radio" name="editgender" id="editFemale"   value="Female" >
+                    <label class="form-check-label " for="Female">Female</label>
+                </div>
+        </div>
+        <p class="error" id="editGenderError"></p>
+        </div>
+    </div>
+    <div class="row p-2 ">
+        <div class="col-12 pt-2  input-control">
+            <label class="form_labels" for="editQualification">Qualifications</label>
+            <input type="text" class="form-control p-2 px-3" id="editQualification" placeholder="enter address">
+            <p class="error" id="editQualificationError"></p>
+        </div>
+    </div>
+    <div class="row p-2 ">
+      <div class="col-12 pt-2  input-control">
+          <label class="form_labels" for="editAddress">Address</label>
+          <input type="text" class="form-control p-2 px-3" id="editAddress" placeholder="enter address">
+          <p class="error" id="editAddressError"></p>
+      </div>
+  </div>
+    <div class="row p-2 ">
+        <div class="col-6 pt-2 input-control ">
+            <label class="form_labels" for="editCountry">Country</label>
+            <select class="form-select p-2 px-3" aria-label="Default select example" id="editCountry">
+                <option >select</option>
+                <option value="india">india</option>
+                <option value="cannada">cannada</option>
+                <option value="america">america</option>
+                <option value="china">china</option>
+            </select>
+            <P class="error" id="editCountrySelectorError"></P>
+        </div>
+        <div class="col-6 pt-2  input-control">
+            <label class="form_labels" for="editState">State</label>
+            <select class="form-select p-2 px-3" aria-label="Default select example" id="editState">
+                <option >select</option>
+                <option value="kerala">kerala</option>
+                <option value="tamilnadu">tamilnadu</option>
+                <option value="sanfransico">sanfransico</option>
+                <option value="shanghai">shanghai</option>
+            </select>
+            <P class="error" id="editStateSelectorError"></P>
+        </div>
+    </div>
+    <div class="row p-2 ">
+        <div class="col-6 pt-2 input-control ">
+            <label class="form_labels" for="editCity">City</label>
+            <input type="text" class="form-control p-2 px-3" id="editCity" placeholder="enter city">
+            <P class="error" id="editCitySelectorError"></P>
+        </div>
+        <div class="col-6 pt-2 input-control ">
+            <label class="form_labels" for="editPincode">Pin/Zip</label>
+            <input type="number" class="form-control p-2 px-3" id="editPincode" placeholder="enter zip/pin">
+            <P class="error" id="editPincodeError"></P>
+        </div>
+    </div>
+      <div class="form-btn d-flex flex-row ">
+          <button class="filled-btn unfill" onclick="closeForm()">Cancel</button>
+          <button class="filled-btn" type="submit" id="saveChange">Save Changes</button>
+    </div>
+    </form>
+  </div>
+</div> 

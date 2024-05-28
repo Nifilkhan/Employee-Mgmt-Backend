@@ -1,0 +1,144 @@
+<div class="container-form" id="addEmployee">
+    <div class="main-form col-12 bg-white">
+      <div class="header-content d-flex flex-row ">
+        <h4 class="heading">Add Employee</h4>
+        <button class="btn-exit" onclick="closeEmployee()"><i class="fa-solid fa-x"></i></button>
+      </div>      
+        
+      <div class="hero">
+        <label for="input-file" id="drop-area">
+            <input type="file" name="avatar" accept="image/*" id="input-file" hidden>
+            <div id="img-view">
+                <img src="icon/upload (2).png" id="addImage">
+                <P>Drag And Dop Or Click Here 
+                    To Upload Image
+                </P>
+                <span>Upload Any Images From Desktop </span>
+            </div>
+        </label>
+    </div>
+    <form>
+      <div class="row justify-content-between p-2 ">
+          <div class=" col-2 input-control pt-2  ">
+              <label class="form_labels" for="salutation" >Salutation</label>
+              <select class="form-select p-2 px-3" aria-label="Default select example" id="salutation">
+                  <option >select</option>
+                  <option value="mr">mr</option>
+                  <option value="ms">ms</option>
+                  <option value="mrs">mrs</option>
+              </select>
+              <p class="error" id="salutationError"></p>
+          </div>
+          <div class="col-5 input-control  pt-2   ">
+              <label class="form_labels" for="firstname">First name</label>
+              <input type="text" class="form-control p-2 px-3" id="firstname" placeholder="John">
+              <p class="error" id="firstnameError"></p>
+          </div>
+          <div class="col-5 input-control pt-2  ">
+              <label class="form_labels" for="lastname">Last name</label>
+              <input type="text" class="form-control p-2 px-3" id="lastname" placeholder="doe">
+              <p class="error" id="lastnameError"></p>
+          </div>
+      </div>
+      <div class="row p-2 ">
+          <div class="col-6 pt-2 input-control  ">
+              <label class="form_labels" for="email">Email Address</label>
+              <input type="email" class="form-control p-2 px-3" id="email" placeholder="mail@simmmple.com">
+              <p class="error" id="emailError"></p>
+          </div>
+          <div class="col-6 input-control pt-2 ">
+              <label class="form_labels" for="mobilenumber">Mobile Number</label>
+              <input class="form-control p-2 px-3" type="text" placeholder="enter mobile number" aria-label="default input example" id="mobilenumber">
+              <p class="error" id="mobilenumberError"></p>
+          </div>
+      </div>
+      <div class="row p-2 ">
+        <div class="col-6 input-control">
+            <label class="form_labels" for="username" >User name</label>
+            <input type="username" class="form-control p-2 px-3" id="username" placeholder="username">
+            <p class="error" id="usernameError"></p>
+        </div>
+        <div class="col-6 input-control">
+             <label class="form_labels" for="password">Password</label>
+              <input type="password" class="form-control p-2 px-3" id="password" placeholder="password">
+              <p class="error" id="passwordError"></p>
+        </div>
+      </div>
+      <div class="row p-2 ">
+          <div class="col-6 pt-2 input-control  ">
+              <label class="form_labels" for="dateOfBirth">Date of Birth</label>
+              <input type="date" class="form-control p-2 px-3"  id="dateOfBirth" onchange="clearValidation()">
+              <p class="error" id="dobError"></p>
+          </div>
+          <div class="col-6 pt-2 input-control ">
+              <label class="form_labels" for="gender">Gender</label> 
+              <div class=" d-flex gap-2">
+                  <div class="form-check d-flex align-items-center mt-2 gap-2">
+                      <input class="form-check-input" type="radio" name="gender" id="male" value="Male" >
+                      <label class="form-check-label " for="male">Male</label>
+                  </div>
+                  <div class="form-check d-flex align-items-center mt-2 gap-2">
+                      <input class="form-check-input" type="radio" name="gender" id="female"  value="Female" >
+                      <label class="form-check-label " for="female">Female</label>
+                  </div>
+          </div>
+          <p class="error" id="genderError"></p>
+          </div>
+      </div>
+      <div class="row p-2 ">
+          <div class="col-12 pt-2  input-control">
+              <label class="form_labels" for="qualification">Qualifications</label>
+              <input type="email" class="form-control p-2 px-3" id="qualification" placeholder="enter address">
+              <p class="error" id="qualificationError"></p>
+          </div>
+      </div>
+      <div class="row p-2 ">
+        <div class="col-12 pt-2  input-control">
+            <label class="form_labels" for="address">Address</label>
+            <input type="email" class="form-control p-2 px-3" id="address" placeholder="enter address">
+            <p class="error" id="addressError"></p>
+        </div>
+    </div>
+      <div class="row p-2 ">
+          <div class="col-6 pt-2 input-control ">
+              <label class="form_labels" for="countrySelector">Country</label>
+              <select class="form-select p-2 px-3" aria-label="Default select example" id="countrySelector">
+                  <option >select</option>
+                  <option value="india">india</option>
+                  <option value="cannada">cannada</option>
+                  <option value="america">america</option>
+                  <option value="china">china</option>
+              </select>
+              <P class="error" id="countrySelectorError"></P>
+          </div>
+          <div class="col-6 pt-2  input-control">
+              <label class="form_labels" for="stateSelector">State</label>
+              <select class="form-select p-2 px-3" aria-label="Default select example" id="stateSelector">
+                  <option >select</option>
+                  <option value="kerala">kerala</option>
+                  <option value="tamilnadu">tamilnadu</option>
+                  <option value="sanfransico">sanfransico</option>
+                  <option value="shanghai">shanghai</option>
+              </select>
+              <P class="error" id="stateSelectorError"></P>
+          </div>
+      </div>
+      <div class="row p-2 ">
+          <div class="col-6 pt-2 input-control ">
+              <label class="form_labels" for="citySelector">City</label>
+              <input type="text" class="form-control p-2 px-3" id="citySelector" placeholder="enter city">
+              <P class="error" id="citySelectorError"></P>
+          </div>
+          <div class="col-6 pt-2 input-control ">
+              <label class="form_labels" for="pincode">Pin/Zip</label>
+              <input type="email" class="form-control p-2 px-3" id="pincode" placeholder="enter zip/pin">
+              <P class="error" id="pincodeError"></P>
+          </div>
+      </div>
+    </form>
+      <div class="form-btn d-flex flex-row ">
+          <button class="filled-btn unfill" onclick="closeEmployee()">Cancel</button>
+          <button class="filled-btn" id="addemployee" type="submit">Add Employee</button>
+    </div> 
+  </div>
+</div>

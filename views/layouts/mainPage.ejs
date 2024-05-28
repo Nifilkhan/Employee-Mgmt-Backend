@@ -1,0 +1,73 @@
+<div class="container main  p-0 ">
+    <div class="content-container">
+      <div class="logo-head  d-flex flex-row  ">
+        <div class="main-cont d-flex flex-column p-3  ">
+            <span class="head-1">Dashboard / Employees</span>
+            <a href="/" class="sub-head">Employee</a>
+        </div>
+        <div class="search d-flex flex-row gap-3 ">
+           <div class="search-bar d-flex flex-row gap-2 ">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search" class="search-main" id="searchInput" onkeyup="searchInput()">
+        </div> 
+           <a href="#"><i class="fa-regular fa-bell"></i></a>
+           <img src="icon/Elipse 5.png" alt="" class="icon-img">
+        </div>
+    </div>
+    <div class="container-fluid main-content bg-light p-0  ">
+        <div class="table-head d-flex flex-row ">
+            <span class="table-header-content">Employees List</span>
+            <div class="dropdown-table d-flex flex-row ">
+               
+               <select name="" id="page-limit">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+               </select>
+                <span class="dropdown-text">of 10</span>
+              </div>
+              <div class="add">
+                <button class="filled-btn" onclick="addEmployee()">
+                    Add Employee
+                </button>
+            </div>
+        </div>
+
+        <!-- table content start -->
+
+        <div class="table-content ">
+            <table class="table">
+                <thead>
+                  <tr class="content">
+                    <th scope="col"><Span class="table-text">Sl.No</span> <i class="fa-solid fa-chevron-down"></i></th>
+                    <th scope="col"><span class="table-text">Name</span><i class="fa-solid fa-chevron-down"></i></th>
+                    <th scope="col"><span class="table-text">Email</span> <i class="fa-solid fa-chevron-down"></i></th>
+                    <th scope="col"><span class="table-text">Phone</span> <i class="fa-solid fa-chevron-down"></i></th>
+                    <th scope="col"><span class="table-text">Gender</span> <i class="fa-solid fa-chevron-down"></i></th>
+                    <th scope="col"><span class="table-text">DOB</span> <i class="fa-solid fa-chevron-down"></i></th>
+                    <th scope="col"><span class="table-text">Country</span> <i class="fa-solid fa-chevron-down"></i></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody id="data-output">
+                </tbody>
+               
+              </table>
+        </div>
+        
+        <!-- table content end -->
+        
+        <!-- pagination-start -->
+
+     </div>
+     <nav>
+        <ul id="pagination" class="pagination justify-content-end d-flex  m-0 " >
+        </ul>
+    </div>
+    <div class="footer-content-right d-flex flex-row ">
+      <div class="footer-license"> <span class="content-boo">© 2023  All Rights Reserved. Stackup</span></div>
+      <div class="content-last  d-flex flex-row gap-3 "><a class="more-link" href="#">Terms of Use </a><a href="">Privacy Policy</a></div>
+    </div>
+</div>
