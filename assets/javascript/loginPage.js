@@ -17,10 +17,10 @@ const submit = document.getElementById('signup-form');
 submit.addEventListener('submit', async(e) => {
     e.preventDefault();
 
-    //fetching values
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
+const name = document.getElementById('signup-name').value;
+const email = document.getElementById('signup-email').value;
+const password = document.getElementById('signup-password').value;
+
 
     //constructing object 
     const data = {
@@ -46,6 +46,8 @@ submit.addEventListener('submit', async(e) => {
     console.log("failed to fetch",err.message);
 }
 });
+
+
 
 //Login fetch 
 
@@ -75,11 +77,27 @@ login.addEventListener('submit', async(e) => {
     const userData = await response.json();
     console.log(userData);
 
-    if (userData.message === 'Login successful') {
-        window.location.href = '/';
-    }
+        Swal.fire({
+        title: "Login successfully!",
+        text: "User logged successfully",
+        icon: "info",
+        showConfirmButton: false,
+        timer: 2000
+      });
+    
+      setTimeout(() => {
+          if (userData.message === 'Login successful') {
+              window.location.href = '/';
+          }
+      }, 2200);
 
 }catch(err){
     console.log(err,"failed to fetch");
+    Swal.fire({
+        title: "Login failed!",
+        text: err.message,
+        icon: 'warning',
+        confirmButtonText: "ok",
+      })
 }
 });

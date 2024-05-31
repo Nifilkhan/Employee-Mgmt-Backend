@@ -16,3 +16,7 @@ exports.renderRegisterOtp = (req,res) => {
     const email = req.query.email;
     res.render('registerOtp',{email});
 };
+
+exports.renderLogout = (req,res) => {
+    res.render('index');
+}

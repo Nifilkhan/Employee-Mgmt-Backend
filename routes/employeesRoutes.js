@@ -6,7 +6,6 @@ router.route("/").get(getEmployees).post(createEmployee);
 
 router.route("/:id").get(getEmployee).put(updateEmployee).delete(deleteEmployee);
 
-// router.route("/").get(renderHome);
 
 
 module.exports = router;

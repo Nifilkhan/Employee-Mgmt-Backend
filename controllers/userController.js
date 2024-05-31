@@ -70,13 +70,8 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access public
 const verifyOtp = asyncHandler(async (req, res) => {
     const { otps, email } = req.body;
-    console.log(otps);
-    
-    console.log(req.body, "asdfghjk");
 
     if (otp === otps) {
-        console.log(otps);
-        console.log(otp);
         // Save user to the database
         const hashedPassword = await bcrypt.hash(passwords, 10);
         const newUser = await User.create({
@@ -86,11 +81,9 @@ const verifyOtp = asyncHandler(async (req, res) => {
         });
         console.log(newUser);
         newUser.save();
-
         // Clear OTP after successful verification
         delete tempUsers[email];
-
-        return res.redirect('/login')
+        res.status(200).json({ message: 'User registered successfully', redirect: '/login'});
     } else {
         res.status(400).json({ error: 'Invalid OTP' });
     }
@@ -109,8 +102,6 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-
-
     
     // Compare password with the hashed password
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -127,5 +118,6 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("Email or password is not valid");
     }
 });
+
 
 module.exports = { registerUser, verifyOtp, loginUser };
