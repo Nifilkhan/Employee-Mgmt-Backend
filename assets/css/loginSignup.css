@@ -79,7 +79,8 @@ a {
 
 .form-container input {
   background: #eee;
-  border: none;
+  border: 1px solid #000;
+  border-radius: 30px;
   padding: 12px 15px;
   margin: 8px 0;
   width: 100%;
@@ -222,3 +223,4 @@ button.ghost {
   letter-spacing: 15px;
   align-items: center;
 }
+

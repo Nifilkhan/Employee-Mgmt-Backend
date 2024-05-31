@@ -65,6 +65,7 @@ const createEmployee = asyncHandler(async (req, res) => {
 }
 });
 
+
 //@desc get employees
 //@route GET /api/users/:id
 //@access public
@@ -106,10 +107,6 @@ const deleteEmployee = asyncHandler(async (req, res) => {
     await Employee.findByIdAndDelete(req.params.id);
   res.status(200).json(empolyee);
 });
-// const  renderHome =(req,res)=>{
-//     res.render('index');
-
-// } 
 
 module.exports = {
   getEmployees,
@@ -117,5 +114,4 @@ module.exports = {
   getEmployee,
   updateEmployee,
   deleteEmployee,
-//   renderHome
 };

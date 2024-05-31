@@ -62,10 +62,10 @@ const employeeSchema = mongoose.Schema(
       type: String,
       required: [true, "Pincode required"],
     },
-    image: {
-      type: String,
-      required: [true, "Image required"],
-    }
+    // image: {
+    //   data: Buffer,
+    //   contentType: String,
+    // }
   },
   {
     timestamps: true,
