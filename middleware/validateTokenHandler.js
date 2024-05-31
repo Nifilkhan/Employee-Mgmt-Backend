@@ -5,7 +5,7 @@ const tokenValidate = asyncHandler(async (req, res, next) => {
     console.log("Token set in session:", req.session.token);
     next();
     } else {
-        res.redirect('/login');
+        // res.redirect('/login');
         res.status(401).json({message:"not authenticated"});
 
     }

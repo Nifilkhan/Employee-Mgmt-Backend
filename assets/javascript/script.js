@@ -43,7 +43,7 @@ function employeePagination(page) {
         out += `
             <tr>
                 <td>#${count}</td>
-                <td>
+                <td><img class="img-details" src="/uploads/${employee.avatar}" height="30px" width="30px" >
                 ${employee.salutation}. ${employee.firstName} ${employee.lastName}</td>
                 <td>${employee.email}</td>
                 <td>${employee.phone}</td>
@@ -209,16 +209,16 @@ submit.addEventListener("click", async () => {
       const data = await response.json();
       console.log("after fetch", data);
 
-      appendEmployee(newUser, data.id);
+      appendEmployee(newUser, data._id);
 
-      // const uploadImage = document.getElementById("input-file");
-      // const formData = new FormData();
-      // formData.append("avatar", uploadImage.files[0]);
+      const uploadImage = document.getElementById("input-file");
+      const formData = new FormData();
+      formData.append("avatar", uploadImage.files[0]);
 
-      // await fetch(`http://localhost:3000/employees/${data.id}/avatar`, {
-      //   method: "POST",
-      //   body: formData,
-      // });
+      await fetch(`http://localhost:6001/api/employes/${data._id}/avatar`, {
+        method: "POST",
+        body: formData,
+      });
 
       const result = await Swal.fire({
         icon: "success",
@@ -256,29 +256,25 @@ function appendEmployee(employee, id) {
     employee.country
   ) {
     var newRow = document.createElement("tr");
-    let count = 1;
     newRow.innerHTML = `
       <td>#${zero(rowCount + 1)}</td>
-      <td><img class="img-details" src="http://localhost:3000/employees/${id}/avatar" height="30px"  width="30px">
-      ${employee?.salutation}. ${employee?.firstName} ${employee?.lastName}</td>
-      <td>${employee?.email}</td>
-      <td>${employee?.phone}</td>
-      <td>${employee?.gender}</td>
-      <td>${employee?.dob}</td>
-      <td>${employee?.country}</td>
-   
-
-      <td>   <div class="edit-form">
-      <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" a ria-expanded="false" onclick="getIndex(${count})"><i class="fa-solid fa-ellipsis "></i>
-      </button>
-      <ul class="dropdown-menu edit-buttons" aria-labelledby="dropdownMenuButton1">
-        <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="viewform.html?id=${id}">View Details</a></li>
-        <li class="view edit"><i class="fa-solid fa-pencil"></i><a class="edit-text" href="#" onclick=" editEmp('${id}')">Edit</a></li>
-        <li class="view edit"><i class="fa-solid fa-trash"></i><a class="edit-text" href="#" onclick="delete_emp('${id}')">Delete</a>
-        </li>
-      </ul>  
-    </div></i></td>
-      </tr>
+      <td><img class="img-details" src="http://localhost:6001/api/employes/${id}/avatar" height="30px"  width="30px">
+      ${employee.salutation}. ${employee.firstName} ${employee.lastName}</td>
+      <td>${employee.email}</td>
+      <td>${employee.phone}</td>
+      <td>${employee.gender}</td>
+      <td>${employee.dob}</td>
+      <td>${employee.country}</td>
+      <td>
+        <div class="edit-form">
+          <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" onclick="getIndex(${rowCount + 1})"><i class="fa-solid fa-ellipsis"></i></button>
+          <ul class="dropdown-menu edit-buttons" aria-labelledby="dropdownMenuButton1">
+            <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="viewform.html?id=${id}">View Details</a></li>
+            <li class="view edit"><i class="fa-solid fa-pencil"></i><a class="edit-text" href="#" onclick="editEmp('${id}')">Edit</a></li>
+            <li class="view edit"><i class="fa-solid fa-trash"></i><a class="edit-text" href="#" onclick="delete_emp('${id}')">Delete</a></li>
+          </ul>  
+        </div>
+      </td>
     `;
 
     var tableBody = document.getElementById("data-output");
@@ -288,6 +284,7 @@ function appendEmployee(employee, id) {
     console.error("Invalid data format or missing properties:", employee);
   }
 }
+
 
 // Update serial numbers
 function updateSerialNumbers() {
@@ -319,7 +316,7 @@ async function editEmp(id) {
       return date.split("-").reverse().join("-");
     }
 
-    document.getElementById("editImage").src = `http://localhost:3000/employees/${id}/avatar`;
+    document.getElementById("editImage").src =`uploads/${employee.avatar}`;
     document.getElementById("editSalutation").value = employee.salutation;
     document.getElementById("editFirstname").value = employee.firstName;
     document.getElementById("editLastname").value = employee.lastName;
@@ -392,7 +389,7 @@ async function editEmp(id) {
       if (uploadImage) {
         const formData = new FormData();  
         formData.append("avatar", uploadImage);
-        fetch(`http://localhost:3000/employees/${id}/avatar`, {
+        fetch(`http://localhost:6001/api/employes/${id}/avatar`, {
           method: "POST",
           body: formData,
         })
@@ -424,7 +421,7 @@ function updateTableRow(id, employee) {
 
   if (tableRow) {
     const properties = [
-      `<img class="img-details" src="http://localhost:3000/employees/${id}/avatar" height="30px"  width="30px">${employee.salutation}. ${employee.firstName} ${employee.lastName}`,
+      `<img class="img-details" src="http://localhost:6001/api/employes/${id}/avatar" height="30px"  width="30px">${employee.salutation}. ${employee.firstName} ${employee.lastName}`,
       employee.email,
       employee.phone,
       employee.gender,
@@ -1060,7 +1057,7 @@ function display(employeeArray) {
     <tr>
       <td>#${count++}</td>
       <td>
-        <img class="img-details" src="http://localhost:3000/employees/${employee.id}/avatar" height="30px" width="30px">
+        <img class="img-details" src="http://localhost:6001/api/employes/${employee.id}/avatar" height="30px" width="30px">
         ${employee.salutation}. ${employee.firstName} ${employee.lastName}
       </td>
       <td>${employee.email}</td>

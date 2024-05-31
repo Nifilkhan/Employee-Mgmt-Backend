@@ -9,6 +9,51 @@ const getEmployees = asyncHandler(async (req, res) => {
   res.status(200).json(employee);
 });
 
+// const postImage = asyncHandler(async (req, res) => {
+//   const id = req.params.id;
+//   console.log(id);
+//   console.log( "error1",req.file);
+//   const employe = await Employee.findById(id);
+//   if (employe) {
+//     const updateEmploy = await Employee.findByIdAndUpdate(
+//       req.params.id,
+//       {avatar: req.file.filename}
+//     )
+//   }
+// })
+
+
+const postImage = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  console.log("Uploaded file:", req.file);
+
+  // Check if a file was uploaded
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+
+  try {
+    // Find the employee by ID
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    // Update the employee's avatar field with the filename of the uploaded image
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      id,
+      { avatar: req.file.filename },
+      { new: true }
+    );
+
+    return res.status(200).json({ message: "Employee avatar updated successfully", employee: updatedEmployee });
+  } catch (error) {
+    console.error("Error updating employee avatar:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 //@desc create a new employee
 //@route POST /api/users
 //@access public
@@ -65,7 +110,6 @@ const createEmployee = asyncHandler(async (req, res) => {
 }
 });
 
-
 //@desc get employees
 //@route GET /api/users/:id
 //@access public
@@ -114,4 +158,5 @@ module.exports = {
   getEmployee,
   updateEmployee,
   deleteEmployee,
+  postImage,
 };

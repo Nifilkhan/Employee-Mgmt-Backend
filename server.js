@@ -44,6 +44,7 @@ app.use(session({
 app.use('/css',express.static(path.resolve(__dirname,'assets/css')));
 app.use('/javascript',express.static(path.resolve(__dirname,'assets/javascript')));
 app.use('/icon',express.static(path.resolve(__dirname,'assets/icon')));
+app.use('/uploads',express.static(path.resolve(__dirname,"uploads")));
 
 app.use('/',viewControllerRouts);
 
