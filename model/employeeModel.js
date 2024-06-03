@@ -4,7 +4,7 @@ const employeeSchema = mongoose.Schema(
   {
     avatar: {
       type: String,
-      default:"default-avatar"
+      // default:"default-avatar"
     },
     salutation: {
       type: String,

@@ -22,29 +22,21 @@ app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
 
 app.use(express.json());
+
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended:true }));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Adjust secure option based on your environment
+    // cookie: { secure: false } // Adjust secure option based on your environment
 }));
-
-//image storage 
-
-// const Storage = multer.diskStorage({
-//     destination:'uploads',
-//     filename:(req, file, cb)=> {
-//         cb(null,file.originalname)
-//     },
-// });
-// const upload = multer({
-//     storage:Storage
-// }).single('testImage')
 
 app.use('/css',express.static(path.resolve(__dirname,'assets/css')));
 app.use('/javascript',express.static(path.resolve(__dirname,'assets/javascript')));
 app.use('/icon',express.static(path.resolve(__dirname,'assets/icon')));
-app.use('/uploads',express.static(path.resolve(__dirname,"uploads")));
+app.use('/uploads',express.static(path.resolve(__dirname,"config/uploads")));
 
 app.use('/',viewControllerRouts);
 

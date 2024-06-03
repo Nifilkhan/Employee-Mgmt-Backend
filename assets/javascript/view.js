@@ -15,7 +15,7 @@ async function viewDetails(id) {
     console.log(employee);
 
     const employeeImage = document.getElementById("imageView");
-    employeeImage.src = `http://localhost:3000/employees/${id}/avatar`;
+    employeeImage.src = `uploads/${employee.avatar}`;
 
     const fullName =
       employee.salutation + " " + employee.firstName + " " + employee.lastName;
@@ -130,7 +130,7 @@ async function editEmployeedetails() {
 
     document.getElementById(
       "editImage"
-    ).src = `http://localhost:3000/employees/${id}/avatar`;
+    ).src = `uploads/${employee.avatar}`;
     document.getElementById("editSalutation").value = employee.salutation;
     document.getElementById("editFirstname").value = employee.firstName;
     document.getElementById("editLastname").value = employee.lastName;

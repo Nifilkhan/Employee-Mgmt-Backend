@@ -1,13 +1,18 @@
-let itemsPerPage = 7;
+let itemsPerPage = document.getElementById('page-limit').value;
 let currentPage = 1;
 var rowCount = 0;
 let allEmployees;
-
+let searchinput = "";
+function searchInput() {
+   searchinput = document.getElementById('searchInput').value;
+  console.log(searchinput);
+  addFetch();
+}
 addFetch();
 
 async function addFetch() {
   try {
-      const response = await fetch("http://localhost:6001/api/employes/");
+    const response = await fetch(`http://localhost:6001/api/employes?page=${currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(searchinput)}`);
       const employees = await response.json();
       
       allEmployees = employees;
@@ -142,7 +147,6 @@ function closeEmployee() {
 }
 
 //fetching data end
-
 const submit = document.getElementById("addemployee");
 
 submit.addEventListener("click", async () => {
@@ -161,24 +165,24 @@ submit.addEventListener("click", async () => {
     const city = document.getElementById("citySelector");
     const zip = document.getElementById("pincode");
     const dob = document.getElementById("dateOfBirth").value;
-
+    
     //dob format change
-
+    
     var newDate = formatchange(dob);
     function formatchange(dob) {
       const array = dob.split("-");
       let day = array[0];
       let month = array[1];
       let year = array[2];
-
+      
       let dateformat = year + "-" + month + "-" + day;
       return dateformat;
     }
-
+    
     //gender function
-
+    
     var gender = document.querySelector('input[name="gender"]:checked').value;
-
+    
     let newUser = {
       salutation: salutation.value,
       firstName: firstname.value,
@@ -205,34 +209,42 @@ submit.addEventListener("click", async () => {
         },
         body: JSON.stringify(newUser),
       });
-      console.log(response);
-      const data = await response.json();
-      console.log("after fetch", data);
+      if (response.ok) {
+        const data = await response.json();
+        const uploadImage = document.getElementById("input-file");
+        const formData = new FormData();
+        formData.append("avatar", uploadImage.files[0]);
 
-      appendEmployee(newUser, data._id);
+        const imageRes = await fetch(`http://localhost:6001/api/employes/${data._id}/avatar`, {
+          method: "POST",
+          body: formData,
+        });
 
-      const uploadImage = document.getElementById("input-file");
-      const formData = new FormData();
-      formData.append("avatar", uploadImage.files[0]);
+        if (imageRes.ok) {
+          const imagePath = await imageRes.json().then(res => res.employee.avatar);
+          console.log("Image uploaded successfully. URL:", imagePath);
 
-      await fetch(`http://localhost:6001/api/employes/${data._id}/avatar`, {
-        method: "POST",
-        body: formData,
-      });
+          appendEmployee(newUser, data._id, imagePath);
 
-      const result = await Swal.fire({
-        icon: "success",
-        title: "Employee Added Successfully!",
-        confirmButtonText: "OK",
-      });
+          const result = await Swal.fire({
+            icon: "success",
+            title: "Employee Added Successfully!",
+            confirmButtonText: "OK",
+          });
 
-      if (result.isConfirmed) {
-        Swal.close();
-        closeEmployee();
-        clearFormDetails();
+          if (result.isConfirmed) {
+            Swal.close();
+            closeEmployee();
+            clearFormDetails();
+          }
+        } else {
+          console.error("Failed to upload image.");
+        }
+      } else {
+        console.error("Failed to create employee.");
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("Error:", error);
     }
   }
 });
@@ -241,7 +253,7 @@ submit.addEventListener("click", async () => {
 
 // Append employee information
 
-function appendEmployee(employee, id) {
+function appendEmployee(employee, id,avatar) {
   console.log("Data received:", employee);
 
   if (
@@ -258,7 +270,7 @@ function appendEmployee(employee, id) {
     var newRow = document.createElement("tr");
     newRow.innerHTML = `
       <td>#${zero(rowCount + 1)}</td>
-      <td><img class="img-details" src="http://localhost:6001/api/employes/${id}/avatar" height="30px"  width="30px">
+      <td><img class="img-details" src="http://localhost:6001/uploads/${avatar}?timestamp=${new Date().getTime()}" height="30px"  width="30px">
       ${employee.salutation}. ${employee.firstName} ${employee.lastName}</td>
       <td>${employee.email}</td>
       <td>${employee.phone}</td>
@@ -269,7 +281,7 @@ function appendEmployee(employee, id) {
         <div class="edit-form">
           <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" onclick="getIndex(${rowCount + 1})"><i class="fa-solid fa-ellipsis"></i></button>
           <ul class="dropdown-menu edit-buttons" aria-labelledby="dropdownMenuButton1">
-            <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="viewform.html?id=${id}">View Details</a></li>
+            <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="/view?id=${id}">View Details</a></li>
             <li class="view edit"><i class="fa-solid fa-pencil"></i><a class="edit-text" href="#" onclick="editEmp('${id}')">Edit</a></li>
             <li class="view edit"><i class="fa-solid fa-trash"></i><a class="edit-text" href="#" onclick="delete_emp('${id}')">Delete</a></li>
           </ul>  
@@ -1043,41 +1055,41 @@ dropArea.addEventListener("drop", function (e) {
 
 // employee image adding drag and drop
 
-//search employee information
-function searchInput() {
-  const searchValue = document.getElementById("searchInput").value.toLowerCase();
-  const searchEmployee = allEmployees.filter(employee => employee.firstName.toLowerCase().includes(searchValue));
-  display(searchEmployee);
-}
+// //search employee information
+// function searchInput() {
+//   const searchValue = document.getElementById("searchInput").value.toLowerCase();
+//   const searchEmployee = allEmployees.filter(employee => employee.firstName.toLowerCase().includes(searchValue));
+//   display(searchEmployee);
+// }
 
-function display(employeeArray) {
-  const placeholder = document.querySelector("#data-output");
-  let count = 1;
-  const out = employeeArray.map(employee => `
-    <tr>
-      <td>#${count++}</td>
-      <td>
-        <img class="img-details" src="http://localhost:6001/api/employes/${employee.id}/avatar" height="30px" width="30px">
-        ${employee.salutation}. ${employee.firstName} ${employee.lastName}
-      </td>
-      <td>${employee.email}</td>
-      <td>${employee.phone}</td>
-      <td>${employee.gender}</td>
-      <td>${employee.dob}</td>
-      <td>${employee.country}</td>
-      <td>
-        <div class="edit-form">
-          <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" onclick="getIndex(${count})"><i class="fa-solid fa-ellipsis "></i></button>
-          <ul class="dropdown-menu edit-buttons" aria-labelledby="dropdownMenuButton1">
-            <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="viewform.html?id=${employee.id}">View Details</a></li>
-            <li class="view edit"><i class="fa-solid fa-pencil"></i><a class="edit-text" href="#" onclick="editEmp('${employee.id}')">Edit</a></li>
-            <li class="view edit"><i class="fa-solid fa-trash"></i><a class="edit-text" href="#" onclick="delete_emp('${employee.id}')">Delete</a></li>
-          </ul>  
-        </div>
-      </td>
-    </tr>
-  `).join('');
+// function display(employeeArray) {
+//   const placeholder = document.querySelector("#data-output");
+//   let count = 1;
+//   const out = employeeArray.map(employee => `
+//     <tr>
+//       <td>#${count++}</td>
+//       <td>
+//         <img class="img-details" src="http://localhost:6001/api/employes/${employee.id}/avatar" height="30px" width="30px">
+//         ${employee.salutation}. ${employee.firstName} ${employee.lastName}
+//       </td>
+//       <td>${employee.email}</td>
+//       <td>${employee.phone}</td>
+//       <td>${employee.gender}</td>
+//       <td>${employee.dob}</td>
+//       <td>${employee.country}</td>
+//       <td>
+//         <div class="edit-form">
+//           <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" onclick="getIndex(${count})"><i class="fa-solid fa-ellipsis "></i></button>
+//           <ul class="dropdown-menu edit-buttons" aria-labelledby="dropdownMenuButton1">
+//             <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="viewform.html?id=${employee.id}">View Details</a></li>
+//             <li class="view edit"><i class="fa-solid fa-pencil"></i><a class="edit-text" href="#" onclick="editEmp('${employee.id}')">Edit</a></li>
+//             <li class="view edit"><i class="fa-solid fa-trash"></i><a class="edit-text" href="#" onclick="delete_emp('${employee.id}')">Delete</a></li>
+//           </ul>  
+//         </div>
+//       </td>
+//     </tr>
+//   `).join('');
 
-  placeholder.innerHTML = out;
-}
+//   placeholder.innerHTML = out;
+// }
 //search employee information

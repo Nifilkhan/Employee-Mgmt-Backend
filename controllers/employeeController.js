@@ -6,31 +6,45 @@ const Employee = require('../model/employeeModel');
 //@access public
 const getEmployees = asyncHandler(async (req, res) => {
     const employee = await Employee.find();
+    const page = parseInt(req.query.page);
+    const search = req.query.search || '';
+    const limit = parseInt(req.query.limit);
+    console.log(page);
+    console.log("search",search);
+    console.log(limit);
+
+    const matchStage = {
+      $match:{
+        $or:[
+          { firstName: new RegExp(search, 'i') },
+          { lastName: new RegExp(search, 'i') },
+          { email: new RegExp(search, 'i') },
+        ]
+    }
+    }
+
+    const aggregationPipeline = [
+      matchStage, {
+        $facet: {
+          
+        }
+      }
+    ]
   res.status(200).json(employee);
 });
-
-// const postImage = asyncHandler(async (req, res) => {
-//   const id = req.params.id;
-//   console.log(id);
-//   console.log( "error1",req.file);
-//   const employe = await Employee.findById(id);
-//   if (employe) {
-//     const updateEmploy = await Employee.findByIdAndUpdate(
-//       req.params.id,
-//       {avatar: req.file.filename}
-//     )
-//   }
-// })
 
 
 const postImage = asyncHandler(async (req, res) => {
   const id = req.params.id;
+  const filename = req.file.filename;
+  console.log(filename);
   console.log(id);
   console.log("Uploaded file:", req.file);
+  const imagePath = `uploads/${filename}`
 
   // Check if a file was uploaded
   if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
+    return res.status(400).json({ message: "No file uploaded", imagePath });
   }
 
   try {
