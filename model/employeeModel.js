@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const employeeSchema = mongoose.Schema(
   {
+    avatar: {
+      type: String,
+      // default:"default-avatar"
+    },
     salutation: {
       type: String,
       required: [true, "Salutation required"],
@@ -62,10 +66,6 @@ const employeeSchema = mongoose.Schema(
       type: String,
       required: [true, "Pincode required"],
     },
-    // image: {
-    //   data: Buffer,
-    //   contentType: String,
-    // }
   },
   {
     timestamps: true,

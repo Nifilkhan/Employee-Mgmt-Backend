@@ -6,7 +6,7 @@ const tokenValidate = asyncHandler(async (req, res, next) => {
     next();
     } else {
         res.redirect('/login');
-        res.status(401).json({message:"not authenticated"});
+        // res.status(401).json({message:"not authenticated"});
 
     }
 })

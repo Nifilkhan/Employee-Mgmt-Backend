@@ -40,28 +40,3 @@ document.getElementById('otpForm').addEventListener('submit', async(e) => {
     
 });
 
-
-// Logout function
-// const logout = async () => {
-//     try {
-//         const response = await fetch('http://localhost:6001/api/user/logout', {
-//             method: 'GET',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             }
-//         });
-
-//         if (response.ok) {
-//             window.location.href = '/login'; // Redirect to the login page
-//         } else {
-//             throw new Error('Failed to logout');
-//         }
-//     } catch (error) {
-//         console.error('Error:', error);
-//         alert('Failed to logout: ' + error.message);
-//     }
-// };
-
-// // Example of attaching the logout function to a logout button click event
-// document.getElementById('logoutButton').addEventListener('click', logout);
-

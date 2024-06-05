@@ -26,7 +26,8 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.13",
     "session": "^0.1.0",
-    "sweetalert2": "^11.11.0"
+    "sweetalert2": "^11.11.0",
+    "toastify-js": "^1.12.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

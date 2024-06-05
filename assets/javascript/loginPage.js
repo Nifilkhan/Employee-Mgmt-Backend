@@ -34,8 +34,10 @@ const password = document.getElementById('signup-password').value;
         body: JSON.stringify(data),
     });
 
-    if(!response.ok) {
-        throw new Error("failed to register");
+    if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.message);
+        return;
     }
     const result = await response.json();
     console.log(result);
@@ -71,8 +73,10 @@ login.addEventListener('submit', async(e) => {
         body: JSON.stringify(data),
     });
 
-    if(!response.ok) {
-        throw new Error("failed to register");
+    if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.message);
+        return;
     }
     const userData = await response.json();
     console.log(userData);

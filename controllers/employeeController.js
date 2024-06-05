@@ -6,7 +6,88 @@ const Employee = require('../model/employeeModel');
 //@access public
 const getEmployees = asyncHandler(async (req, res) => {
     const employee = await Employee.find();
-  res.status(200).json(employee);
+    const page = parseInt(req.query.page) ;
+    const search = req.query.search || '';
+    const limit = parseInt(req.query.limit);
+    console.log(page);
+    console.log("search",search);
+    console.log(limit);
+
+    const matchStage = {
+      $match:{
+        $or:[
+          { firstName: new RegExp(search, 'i') },
+          { lastName: new RegExp(search, 'i') },
+          { email: new RegExp(search, 'i') },
+        ]
+    }
+    }
+
+    const aggregationPipeline = [
+      matchStage, {
+        $facet: {
+          metadata:[{ $count: 'total' }],
+          data: [
+            { $skip: (page - 1) * limit },
+            { $limit: limit }
+          ]
+        }
+      }
+    ];
+const result = await Employee.aggregate(aggregationPipeline);
+const metadata = result[0].metadata;
+const data = result[0].data;
+const count = metadata.length > 0 ? metadata[0].total : 0;
+console.log(count);
+console.log(limit);
+
+
+const totalPages = Math.ceil(count / limit);
+console.log(totalPages,"total");
+
+res.status(200).json({
+  total: count,
+  page,
+  limit,
+  totalPages,
+  employees: data
+});
+});
+
+
+
+const postImage = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const filename = req.file.filename;
+  console.log(filename);
+  console.log(id);
+  console.log("Uploaded file:", req.file);
+  const imagePath = `uploads/${filename}`
+
+  // Check if a file was uploaded
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded", imagePath });
+  }
+
+  try {
+    // Find the employee by ID
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    // Update the employee's avatar field with the filename of the uploaded image
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      id,
+      { avatar: req.file.filename },
+      { new: true }
+    );
+
+    return res.status(200).json({ message: "Employee avatar updated successfully", employee: updatedEmployee });
+  } catch (error) {
+    console.error("Error updating employee avatar:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 //@desc create a new employee
@@ -65,7 +146,6 @@ const createEmployee = asyncHandler(async (req, res) => {
 }
 });
 
-
 //@desc get employees
 //@route GET /api/users/:id
 //@access public
@@ -114,4 +194,5 @@ module.exports = {
   getEmployee,
   updateEmployee,
   deleteEmployee,
+  postImage,
 };
