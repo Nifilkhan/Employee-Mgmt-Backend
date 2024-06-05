@@ -1,51 +1,54 @@
-let itemsPerPage = document.getElementById('page-limit').value;
+let itemsPerPage = document.getElementById("page-limit").value;
 let currentPage = 1;
+let totalPage;
 var rowCount = 0;
 let allEmployees;
 let searchinput = "";
 function searchInput() {
-   searchinput = document.getElementById('searchInput').value;
-  console.log(searchinput);
+  searchinput = document.getElementById("searchInput").value;
+  // console.log(searchinput);
   addFetch();
 }
 addFetch();
 
 async function addFetch() {
   try {
-    const response = await fetch(`http://localhost:6001/api/employes?page=${currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(searchinput)}`);
-      const employees = await response.json();
-      
-      allEmployees = employees;
-      
-      const selectPage = document.getElementById("page-limit");
-      selectPage.addEventListener("change", () => {
-          itemsPerPage = parseInt(selectPage.value);
-          addFetch();
-         
-      });
-      employeePagination(currentPage);
-      pagination();
+    const response = await fetch(
+      `http://localhost:6001/api/employes?page=${currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(
+        searchinput
+      )}`
+    );
+    const result = await response.json();
+console.log(result.totalPages);
+totalPage=result.totalPages
+    allEmployees = result.employees;
+    // console.log(allEmployees);
+    const selectPage = document.getElementById("page-limit");
+    selectPage.addEventListener("change", () => {
+      itemsPerPage = parseInt(selectPage.value);
+      addFetch();
+    });
+    employeePagination(currentPage, allEmployees);
+    pagination();
   } catch (error) {
-      console.error("fetch error:", error);
+    console.error("fetch error:", error);
   }
 }
 
+function employeePagination(page, allEmployees) {
+  const start = (page - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  // const data = allEmployees.slice(start, end);
+  // const paginateData = data.reverse();
 
-function employeePagination(page) {
-    const start = (page - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    const data = allEmployees.slice(start, end);
-    const paginateData = data.reverse();
+  let placeholder = document.querySelector("#data-output");
+  let out = "";
+  let count = start + 1;
 
-    let placeholder = document.querySelector("#data-output");
-    let out = "";
-    let count = start + 1;
-
-    for (let employee of paginateData) {
-        const id = employee._id;
-        // const {_id ,email} = employee
-        console.log(id);
-        out += `
+  for (let employee of allEmployees) {
+    const id = employee._id;
+    console.log(id);
+    out += `
             <tr>
                 <td>#${count}</td>
                 <td><img class="img-details" src="/uploads/${employee.avatar}" height="30px" width="30px" >
@@ -67,66 +70,68 @@ function employeePagination(page) {
                 </td>
             </tr>
         `;
-        count++;
-    }
+    count++;
+  }
 
-    placeholder.innerHTML = out;
+  placeholder.innerHTML = out;
 }
 
 function pagination() {
-    let pagination = document.getElementById("pagination");
+  let pagination = document.getElementById("pagination");
+console.log(totalPage);
 
-    pagination.innerHTML = "";
+  pagination.innerHTML = "";
 
-    let totalPage = Math.ceil(allEmployees.length / itemsPerPage);
+  // let totalPage = Math.ceil(allEmployees.length / itemsPerPage);
 
-    const leftSkip = document.createElement("li");
-    pagination.appendChild(leftSkip);
-    leftSkip.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+  const leftSkip = document.createElement("li");
+  pagination.appendChild(leftSkip);
+  leftSkip.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
 
-    leftSkip.addEventListener("click", () => {
-        if (currentPage >= 2) {
-            currentPage = currentPage - 1;
-        } else {
-            currentPage = 1;
-        }
-        employeePagination(currentPage);
-    });
+  leftSkip.addEventListener("click", () => {
+    if (currentPage >= 2) {
+      currentPage = currentPage - 1;
+    } else {
+      currentPage = 1;
+    }
+    employeePagination(currentPage);
+  });
 
-    for (let i = 1; i <= totalPage; i++) {
-        const pageitems = document.createElement("li");
+  for (let i = 1; i <= totalPage; i++) {
+    console.log(totalPage,"fghjkm,lkjhvbnm")
+    const pageitems = document.createElement("li");
 
-        pageitems.textContent = i;
-        pagination.appendChild(pageitems);
+    pageitems.textContent = i;
+    pagination.appendChild(pageitems);
 
-        if (i === currentPage) {
-            pageitems.classList.add("current-page");
-        }
-
-        pageitems.addEventListener("click", () => {
-            currentPage = i;
-            employeePagination(currentPage);
-            const paginationItems = document.querySelectorAll(".pagination li");
-            paginationItems.forEach((item) => {
-                item.classList.remove("current-page");
-            });
-
-            pageitems.classList.add("current-page");
-        });
+    if (i === currentPage) {
+      pageitems.classList.add("current-page");
     }
 
-    const rightSkip = document.createElement("li");
-    pagination.appendChild(rightSkip);
-    rightSkip.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+    pageitems.addEventListener("click", () => {
+      currentPage = i;
+      employeePagination(currentPage);
+      const paginationItems = document.querySelectorAll(".pagination li");
+      paginationItems.forEach((item) => {
+        item.classList.remove("current-page");
+      });
 
-    rightSkip.addEventListener("click", () => {
-        if (currentPage <= totalPage - 1) {
-            currentPage++;
-        } else {
-            currentPage = totalPage;
-        }
-        employeePagination(currentPage);
+      pageitems.classList.add("current-page");
     });
+  }
+
+  const rightSkip = document.createElement("li");
+  pagination.appendChild(rightSkip);
+  rightSkip.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+
+  rightSkip.addEventListener("click", () => {
+    if (currentPage <= totalPages - 1) {
+      currentPage++;
+    } else {
+      currentPage = totalPages;
+    }
+    employeePagination(currentPage);
+  });
 }
 function addEmployee() {
   var addEmployeePopup = document.getElementById("addEmployee");
@@ -165,24 +170,24 @@ submit.addEventListener("click", async () => {
     const city = document.getElementById("citySelector");
     const zip = document.getElementById("pincode");
     const dob = document.getElementById("dateOfBirth").value;
-    
+
     //dob format change
-    
+
     var newDate = formatchange(dob);
     function formatchange(dob) {
       const array = dob.split("-");
       let day = array[0];
       let month = array[1];
       let year = array[2];
-      
+
       let dateformat = year + "-" + month + "-" + day;
       return dateformat;
     }
-    
+
     //gender function
-    
+
     var gender = document.querySelector('input[name="gender"]:checked').value;
-    
+
     let newUser = {
       salutation: salutation.value,
       firstName: firstname.value,
@@ -215,13 +220,16 @@ submit.addEventListener("click", async () => {
         const formData = new FormData();
         formData.append("avatar", uploadImage.files[0]);
 
-        const imageRes = await fetch(`http://localhost:6001/api/employes/${data._id}/avatar`, {
-          method: "POST",
-          body: formData,
-        });
+        const imageRes = await fetch(
+          `http://localhost:6001/api/employes/${data._id}/avatar`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         if (imageRes.ok) {
-          const imagePath = await imageRes.json().then(res => res.employee.avatar);
+          const imagePath = await imageRes.json().then((res) => res.employee.avatar);
           console.log("Image uploaded successfully. URL:", imagePath);
 
           appendEmployee(newUser, data._id, imagePath);
@@ -253,7 +261,7 @@ submit.addEventListener("click", async () => {
 
 // Append employee information
 
-function appendEmployee(employee, id,avatar) {
+function appendEmployee(employee, id, avatar) {
   console.log("Data received:", employee);
 
   if (
@@ -279,7 +287,9 @@ function appendEmployee(employee, id,avatar) {
       <td>${employee.country}</td>
       <td>
         <div class="edit-form">
-          <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" onclick="getIndex(${rowCount + 1})"><i class="fa-solid fa-ellipsis"></i></button>
+          <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" onclick="getIndex(${
+            rowCount + 1
+          })"><i class="fa-solid fa-ellipsis"></i></button>
           <ul class="dropdown-menu edit-buttons" aria-labelledby="dropdownMenuButton1">
             <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="/view?id=${id}">View Details</a></li>
             <li class="view edit"><i class="fa-solid fa-pencil"></i><a class="edit-text" href="#" onclick="editEmp('${id}')">Edit</a></li>
@@ -291,12 +301,11 @@ function appendEmployee(employee, id,avatar) {
 
     var tableBody = document.getElementById("data-output");
     tableBody.insertBefore(newRow, tableBody.firstChild);
-    updateSerialNumbers(); 
+    updateSerialNumbers();
   } else {
     console.error("Invalid data format or missing properties:", employee);
   }
 }
-
 
 // Update serial numbers
 function updateSerialNumbers() {
@@ -321,14 +330,16 @@ async function editEmp(id) {
     editEmployee();
     const response = await fetch(`http://localhost:6001/api/employes/${id}`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch employee data (status ${response.status})`);
+      throw new Error(
+        `Failed to fetch employee data (status ${response.status})`
+      );
     }
     const employee = await response.json();
     function formatDate(date) {
       return date.split("-").reverse().join("-");
     }
 
-    document.getElementById("editImage").src =`uploads/${employee.avatar}`;
+    document.getElementById("editImage").src = `uploads/${employee.avatar}`;
     document.getElementById("editSalutation").value = employee.salutation;
     document.getElementById("editFirstname").value = employee.firstName;
     document.getElementById("editLastname").value = employee.lastName;
@@ -337,7 +348,8 @@ async function editEmp(id) {
     document.getElementById("editUserName").value = employee.username;
     document.getElementById("editPassword").value = employee.password;
     document.getElementById(`edit${employee.gender}`).checked = true;
-    document.getElementById("editQualification").value = employee.qualifications;
+    document.getElementById("editQualification").value =
+      employee.qualifications;
     document.getElementById("editAddress").value = employee.address;
     document.getElementById("editCountry").value = employee.country;
     document.getElementById("editState").value = employee.state;
@@ -345,100 +357,104 @@ async function editEmp(id) {
     document.getElementById("editPincode").value = employee.pincode;
     document.getElementById("editDateOfBirth").value = formatDate(employee.dob);
 
-    document.getElementById("saveChange").addEventListener("click", async (event) => {
-      event.preventDefault();
-    
-      if (FormValidationEdit()) {
-        const editEmployeeDetails = {
-          salutation: document.getElementById("editSalutation").value,
-          firstName: document.getElementById("editFirstname").value,
-          lastName: document.getElementById("editLastname").value,
-          email: document.getElementById("editEmail").value,
-          phone: document.getElementById("editMobileNumber").value,
-          username: document.getElementById("editUserName").value,
-          password: document.getElementById("editPassword").value,
-          dob: formatDate(document.getElementById("editDateOfBirth").value),
-          gender: document.querySelector('input[name="editgender"]:checked').value,
-          qualifications: document.getElementById("editQualification").value,
-          address: document.getElementById("editAddress").value,
-          country: document.getElementById("editCountry").value,
-          state: document.getElementById("editState").value,
-          city: document.getElementById("editCity").value,
-          pincode: document.getElementById("editPincode").value,
-        };
-        try {
-          const response = await fetch(`http://localhost:6001/api/employes/${id}`, {
-            method: "PUT",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(editEmployeeDetails),
-          });
-          console.log(editEmployeeDetails);
-          updateTableRow(id, editEmployeeDetails);
-
-          Swal.fire({
-            title: "Success!",
-            text: "Employee details updated successfully.",
-            icon: "success",
-            confirmButtonText: "OK",
-          });
-          closeForm();
-        } catch (error) {
-          console.error("Error updating employee details:", error);
-        }
-      }
-    });
-
-    let editInputFile = document.getElementById("input-file");
-
-    editInputFile.onchange = function (event) {
-      const uploadImage = this.files[0];
-      const editProfilePicture = document.getElementById("editImage");
-      editProfilePicture.src = URL.createObjectURL(uploadImage);
-    };
-    document.getElementById("saveChange").addEventListener("click", function (event) {
-      event.preventDefault();
-      const uploadImage = editInputFile.files[0];
+    document.getElementById("input-file").addEventListener("change", function (event) {
+      const uploadImage = event.target.files[0];
       if (uploadImage) {
-        const formData = new FormData();  
-        formData.append("avatar", uploadImage);
-        fetch(`http://localhost:6001/api/employes/${id}/avatar`, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to upload image");
-            }
-            console.log("Image uploaded successfully");
-          })
-          .catch((error) => {
-            console.error("Error uploading image:", error);
-          });
+        document.getElementById("editImage").src = URL.createObjectURL(uploadImage);
       }
     });
+
+    document.getElementById("saveChange").addEventListener("click", async (event) => {event.preventDefault();
+
+        if (FormValidationEdit()) {
+          const editEmployeeDetails = {
+            salutation: document.getElementById("editSalutation").value,
+            firstName: document.getElementById("editFirstname").value,
+            lastName: document.getElementById("editLastname").value,
+            email: document.getElementById("editEmail").value,
+            phone: document.getElementById("editMobileNumber").value,
+            username: document.getElementById("editUserName").value,
+            password: document.getElementById("editPassword").value,
+            dob: formatDate(document.getElementById("editDateOfBirth").value),
+            gender: document.querySelector('input[name="editgender"]:checked').value,
+            qualifications: document.getElementById("editQualification").value,
+            address: document.getElementById("editAddress").value,
+            country: document.getElementById("editCountry").value,
+            state: document.getElementById("editState").value,
+            city: document.getElementById("editCity").value,
+            pincode: document.getElementById("editPincode").value,
+          };
+          try {
+            const response = await fetch(
+              `http://localhost:6001/api/employes/${id}`,
+              {
+                method: "PUT",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify(editEmployeeDetails),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error("Failed to update employee details");
+            }
+
+            // Handle image upload
+            const editInputFile = document.getElementById("input-file");
+            const uploadImage = editInputFile.files[0];
+            let imagePath;
+            if (uploadImage) {
+              const formData = new FormData();
+              formData.append("avatar", uploadImage);
+              const imageRes = await fetch(`http://localhost:6001/api/employes/${id}/avatar`,
+                {
+                  method: "POST",
+                  body: formData,
+                }
+              );
+
+              if (!imageRes.ok) {
+                throw new Error("Failed to upload image");
+              }
+
+              imagePath = await imageRes.json().then((res) => res.employee.avatar);
+              console.log("Image uploaded successfully. URL:", imagePath);
+              document.getElementById("editImage").src = `uploads/${imagePath}`;
+            }
+
+            updateTableRow(id, editEmployeeDetails,imagePath);
+
+            Swal.fire({
+              title: "Success!",
+              text: "Employee details updated successfully.",
+              icon: "success",
+              confirmButtonText: "OK",
+            });
+            closeForm();
+          } catch (error) {
+            console.error("Error updating employee details:", error);
+          }
+        }
+      });
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
-let trIndex ;
+let trIndex;
 const getIndex = (index) => {
   trIndex = index;
-  
-}
-function updateTableRow(id, employee) {
- 
-  
-  const tableRow = document.getElementsByTagName('tr')[trIndex];
+};
+function updateTableRow(id, employee, avatar) {
+  const tableRow = document.getElementsByTagName("tr")[trIndex];
 
   if (tableRow) {
     const properties = [
-      `<img class="img-details" src="http://localhost:6001/api/employes/${id}/avatar" height="30px"  width="30px">${employee.salutation}. ${employee.firstName} ${employee.lastName}`,
+      `<img class="img-details" src="uploads/${avatar}" height="30px"  width="30px">${employee.salutation}. ${employee.firstName} ${employee.lastName}`,
       employee.email,
       employee.phone,
       employee.gender,
       employee.dob,
-      employee.country
+      employee.country,
     ];
 
     for (let i = 1; i <= 6; i++) {
@@ -461,7 +477,8 @@ function clearFormDetails() {
   var username = (document.getElementById("username").value = "");
   var password = (document.getElementById("password").value = "");
   var dob = (document.getElementById("dateOfBirth").value = "");
-  var gender = (document.querySelector('input[name="gender"]:checked').value ="");
+  var gender = (document.querySelector('input[name="gender"]:checked').value =
+    "");
   var qualification = (document.getElementById("qualification").value = "");
   var adress = (document.getElementById("address").value = "");
   var country = (document.getElementById("countrySelector").value = "");
@@ -520,7 +537,9 @@ function closeForm() {
 }
 // Function to delete employee
 function delete_emp(id) {
-  document.getElementById("deletBtn").addEventListener("click", function (event) {
+  document
+    .getElementById("deletBtn")
+    .addEventListener("click", function (event) {
       event.preventDefault();
 
       fetch(`http://localhost:6001/api/employes/${id}`, {
@@ -538,7 +557,7 @@ function delete_emp(id) {
             text: "Data has been deleted.",
             icon: "success",
             confirmButtonText: "OK",
-          })
+          });
         })
         .catch((error) => {
           console.error("Error deleting employee:", error);
@@ -591,7 +610,7 @@ function FormValidation() {
     const container = document.getElementById("addEmployee");
     container.scrollTo({ top: container.scrollTop - 600, behavior: "smooth" });
     isValid = false;
-  } 
+  }
 
   if (firstname === "") {
     document.getElementById("firstnameError").textContent = "* Name Required";
@@ -820,7 +839,7 @@ maleRadioButton.addEventListener("change", () => {
 });
 
 femaleRadioButton.addEventListener("change", () => {
-  if (errorGender.textContent !== "") { 
+  if (errorGender.textContent !== "") {
     errorGender.textContent = "";
   }
 });
@@ -1052,44 +1071,3 @@ dropArea.addEventListener("drop", function (e) {
   inputFile.files = e.dataTransfer.files;
   uploadImage();
 });
-
-// employee image adding drag and drop
-
-// //search employee information
-// function searchInput() {
-//   const searchValue = document.getElementById("searchInput").value.toLowerCase();
-//   const searchEmployee = allEmployees.filter(employee => employee.firstName.toLowerCase().includes(searchValue));
-//   display(searchEmployee);
-// }
-
-// function display(employeeArray) {
-//   const placeholder = document.querySelector("#data-output");
-//   let count = 1;
-//   const out = employeeArray.map(employee => `
-//     <tr>
-//       <td>#${count++}</td>
-//       <td>
-//         <img class="img-details" src="http://localhost:6001/api/employes/${employee.id}/avatar" height="30px" width="30px">
-//         ${employee.salutation}. ${employee.firstName} ${employee.lastName}
-//       </td>
-//       <td>${employee.email}</td>
-//       <td>${employee.phone}</td>
-//       <td>${employee.gender}</td>
-//       <td>${employee.dob}</td>
-//       <td>${employee.country}</td>
-//       <td>
-//         <div class="edit-form">
-//           <button class="edit-form" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" onclick="getIndex(${count})"><i class="fa-solid fa-ellipsis "></i></button>
-//           <ul class="dropdown-menu edit-buttons" aria-labelledby="dropdownMenuButton1">
-//             <li class="view"><i class="fa-regular fa-eye eye"></i><a class="edit-text" href="viewform.html?id=${employee.id}">View Details</a></li>
-//             <li class="view edit"><i class="fa-solid fa-pencil"></i><a class="edit-text" href="#" onclick="editEmp('${employee.id}')">Edit</a></li>
-//             <li class="view edit"><i class="fa-solid fa-trash"></i><a class="edit-text" href="#" onclick="delete_emp('${employee.id}')">Delete</a></li>
-//           </ul>  
-//         </div>
-//       </td>
-//     </tr>
-//   `).join('');
-
-//   placeholder.innerHTML = out;
-// }
-//search employee information

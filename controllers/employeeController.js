@@ -6,7 +6,7 @@ const Employee = require('../model/employeeModel');
 //@access public
 const getEmployees = asyncHandler(async (req, res) => {
     const employee = await Employee.find();
-    const page = parseInt(req.query.page);
+    const page = parseInt(req.query.page) ;
     const search = req.query.search || '';
     const limit = parseInt(req.query.limit);
     console.log(page);
@@ -26,12 +26,34 @@ const getEmployees = asyncHandler(async (req, res) => {
     const aggregationPipeline = [
       matchStage, {
         $facet: {
-          
+          metadata:[{ $count: 'total' }],
+          data: [
+            { $skip: (page - 1) * limit },
+            { $limit: limit }
+          ]
         }
       }
-    ]
-  res.status(200).json(employee);
+    ];
+const result = await Employee.aggregate(aggregationPipeline);
+const metadata = result[0].metadata;
+const data = result[0].data;
+const count = metadata.length > 0 ? metadata[0].total : 0;
+console.log(count);
+console.log(limit);
+
+
+const totalPages = Math.ceil(count / limit);
+console.log(totalPages,"total");
+
+res.status(200).json({
+  total: count,
+  page,
+  limit,
+  totalPages,
+  employees: data
 });
+});
+
 
 
 const postImage = asyncHandler(async (req, res) => {
