@@ -9,11 +9,11 @@
            <div class="search-bar d-flex flex-row gap-2 ">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" placeholder="Search" class="search-main" id="searchInput" onkeyup="searchInput()">
-        </div> 
-           <a href="#"><i class="fa-regular fa-bell"></i></a>
-           <img src="icon/Elipse 5.png" alt="" class="icon-img">
         </div>
-    </div>
+        <a href="#"><i class="fa-regular fa-bell"></i></a>
+        <img src="icon/Elipse 5.png" alt="" class="icon-img">
+        </div>
+        </div>
     <div class="container-fluid main-content bg-light p-0  ">
         <div class="table-head d-flex flex-row ">
             <span class="table-header-content">Employees List</span>
@@ -23,10 +23,10 @@
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5" selected>5</option>
+                <option value="4" selected>4</option>
+                <option value="5" >5</option>
                </select>
-                <span class="dropdown-text">of 10</span>
+                <span class="dropdown-text" id="totalCount">of </span>
               </div>
               <div class="add">
                 <button class="filled-btn" onclick="addEmployee()">
@@ -55,6 +55,7 @@
                 </tbody>
                
               </table>
+              <div id="error-message" class="error-message"></div>
         </div>
         
         <!-- table content end -->

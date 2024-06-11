@@ -878,3 +878,13 @@ tr td {
   font-size: 50px;
   color: #52ba0d;
 }
+
+#error-message {
+  text-align: center;
+  margin: 20px 0; /* Adjust as needed for spacing */
+  font-weight: bold;
+  color: red; /* Customize color as needed */
+}
+
+
+
