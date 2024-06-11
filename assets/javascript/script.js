@@ -1,33 +1,39 @@
-let itemsPerPage = document.getElementById("page-limit").value;
+let itemsPerPage = parseInt(document.getElementById("page-limit").value);
 let currentPage = 1;
 let totalPage;
 var rowCount = 0;
-let allEmployees;
+let allEmployees = [];
 let searchinput = "";
-function searchInput() {
-  searchinput = document.getElementById("searchInput").value;
-  // console.log(searchinput);
-  addFetch();
-}
-addFetch();
+let countData = document.getElementById('totalCount');
 
-async function addFetch() {
+function searchInput() {
+  const searchInputValue = document.getElementById("searchInput").value;
+  searchinput = searchInputValue;
+  currentPage = 1;
+  addFetch(currentPage);
+}
+
+document.getElementById("page-limit").addEventListener("change", () => {
+  itemsPerPage = parseInt(document.getElementById("page-limit").value);
+  currentPage = 1; // Reset to first page on items per page change
+  addFetch(currentPage);
+});
+
+
+
+async function addFetch(currentPage) {
   try {
-    const response = await fetch(
-      `http://localhost:6001/api/employes?page=${currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(
-        searchinput
-      )}`
+    const response = await fetch(`http://localhost:6001/api/employes?page=${currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(searchinput)}`
     );
     const result = await response.json();
-console.log(result.totalPages);
-totalPage=result.totalPages
+    console.log(result.total);
+    
+    countData.textContent = `of ${result.total}`;
+    
+    totalPage=result.totalPages
     allEmployees = result.employees;
-    // console.log(allEmployees);
-    const selectPage = document.getElementById("page-limit");
-    selectPage.addEventListener("change", () => {
-      itemsPerPage = parseInt(selectPage.value);
-      addFetch();
-    });
+
+    
     employeePagination(currentPage, allEmployees);
     pagination();
   } catch (error) {
@@ -35,17 +41,26 @@ totalPage=result.totalPages
   }
 }
 
-function employeePagination(page, allEmployees) {
-  const start = (page - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  // const data = allEmployees.slice(start, end);
-  // const paginateData = data.reverse();
 
+function employeePagination(page,employees) {
+  const start = (page - 1) * itemsPerPage;
+  const end = start + itemsPerPage;  
+  
   let placeholder = document.querySelector("#data-output");
+  let errorMessageContainer = document.querySelector("#error-message");
+  let paginationButtons = document.querySelector("#pagination");
   let out = "";
   let count = start + 1;
+  
+  // Clear previous error messages and table content
+  errorMessageContainer.innerHTML = "";
+  placeholder.innerHTML = "";
 
-  for (let employee of allEmployees) {
+  // Check if no employees found 
+  if (employees.length === 0) {
+    errorMessageContainer.innerHTML = `No employee found`; // Directly set the message in the div
+  } else {
+  employees.forEach((employee) => { 
     const id = employee._id;
     console.log(id);
     out += `
@@ -71,52 +86,40 @@ function employeePagination(page, allEmployees) {
             </tr>
         `;
     count++;
-  }
+  });
+}
 
   placeholder.innerHTML = out;
 }
 
 function pagination() {
   let pagination = document.getElementById("pagination");
-console.log(totalPage);
-
   pagination.innerHTML = "";
-
-  // let totalPage = Math.ceil(allEmployees.length / itemsPerPage);
 
   const leftSkip = document.createElement("li");
   pagination.appendChild(leftSkip);
   leftSkip.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
 
   leftSkip.addEventListener("click", () => {
-    if (currentPage >= 2) {
-      currentPage = currentPage - 1;
-    } else {
-      currentPage = 1;
-    }
-    employeePagination(currentPage);
+    if (currentPage > 1) {
+      currentPage--;
+      addFetch(currentPage);
+    } 
   });
 
   for (let i = 1; i <= totalPage; i++) {
-    console.log(totalPage,"fghjkm,lkjhvbnm")
     const pageitems = document.createElement("li");
 
     pageitems.textContent = i;
     pagination.appendChild(pageitems);
-
+    
     if (i === currentPage) {
       pageitems.classList.add("current-page");
     }
-
+    
     pageitems.addEventListener("click", () => {
       currentPage = i;
-      employeePagination(currentPage);
-      const paginationItems = document.querySelectorAll(".pagination li");
-      paginationItems.forEach((item) => {
-        item.classList.remove("current-page");
-      });
-
-      pageitems.classList.add("current-page");
+      addFetch(currentPage)
     });
   }
 
@@ -125,14 +128,15 @@ console.log(totalPage);
   rightSkip.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
 
   rightSkip.addEventListener("click", () => {
-    if (currentPage <= totalPages - 1) {
+    if (currentPage < totalPage ) {
       currentPage++;
-    } else {
-      currentPage = totalPages;
-    }
-    employeePagination(currentPage);
+    addFetch(currentPage);
+    } 
   });
 }
+addFetch(currentPage);
+
+
 function addEmployee() {
   var addEmployeePopup = document.getElementById("addEmployee");
   var overlay = document.getElementById("overlay");
@@ -153,8 +157,8 @@ function closeEmployee() {
 
 //fetching data end
 const submit = document.getElementById("addemployee");
-
-submit.addEventListener("click", async () => {
+submit.addEventListener("click", async (e) => {
+  e.preventDefault();
   if (FormValidation() == true) {
     const salutation = document.getElementById("salutation");
     const firstname = document.getElementById("firstname");
@@ -172,20 +176,17 @@ submit.addEventListener("click", async () => {
     const dob = document.getElementById("dateOfBirth").value;
 
     //dob format change
-
     var newDate = formatchange(dob);
     function formatchange(dob) {
       const array = dob.split("-");
       let day = array[0];
       let month = array[1];
       let year = array[2];
-
       let dateformat = year + "-" + month + "-" + day;
       return dateformat;
     }
 
     //gender function
-
     var gender = document.querySelector('input[name="gender"]:checked').value;
 
     let newUser = {
@@ -205,7 +206,7 @@ submit.addEventListener("click", async () => {
       city: city.value,
       pincode: zip.value,
     };
-    console.log("after fetch", newUser);
+
     try {
       const response = await fetch("http://localhost:6001/api/employes", {
         method: "POST",
@@ -214,14 +215,18 @@ submit.addEventListener("click", async () => {
         },
         body: JSON.stringify(newUser),
       });
+
       if (response.ok) {
         const data = await response.json();
         const uploadImage = document.getElementById("input-file");
         const formData = new FormData();
+
+        // Append the employee ID to the form data
         formData.append("avatar", uploadImage.files[0]);
+        formData.append("id", data.employe._id); // Use the correct property name
 
         const imageRes = await fetch(
-          `http://localhost:6001/api/employes/${data._id}/avatar`,
+          `http://localhost:6001/api/employes/${data.employe._id}/avatar`,
           {
             method: "POST",
             body: formData,
@@ -229,10 +234,12 @@ submit.addEventListener("click", async () => {
         );
 
         if (imageRes.ok) {
-          const imagePath = await imageRes.json().then((res) => res.employee.avatar);
+          const imagePath = await imageRes
+            .json()
+            .then((res) => res.employee.avatar);
           console.log("Image uploaded successfully. URL:", imagePath);
 
-          appendEmployee(newUser, data._id, imagePath);
+          appendEmployee(newUser, data.employe._id, imagePath);
 
           const result = await Swal.fire({
             icon: "success",
@@ -257,6 +264,7 @@ submit.addEventListener("click", async () => {
   }
 });
 
+
 //adding employee information end
 
 // Append employee information
@@ -278,7 +286,7 @@ function appendEmployee(employee, id, avatar) {
     var newRow = document.createElement("tr");
     newRow.innerHTML = `
       <td>#${zero(rowCount + 1)}</td>
-      <td><img class="img-details" src="http://localhost:6001/uploads/${avatar}?timestamp=${new Date().getTime()}" height="30px"  width="30px">
+      <td><img class="img-details" src="http://localhost:6001/uploads/${avatar}" height="30px"  width="30px">
       ${employee.salutation}. ${employee.firstName} ${employee.lastName}</td>
       <td>${employee.email}</td>
       <td>${employee.phone}</td>
@@ -550,7 +558,7 @@ function delete_emp(id) {
         })
         .then((data) => {
           console.log("Employee deleted successfully:", data);
-          addFetch();
+          addFetch(currentPage);
           cancelDelet();
           Swal.fire({
             title: "Deleted!",

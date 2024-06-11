@@ -17,9 +17,9 @@ const submit = document.getElementById('signup-form');
 submit.addEventListener('submit', async(e) => {
     e.preventDefault();
 
-const name = document.getElementById('signup-name').value;
-const email = document.getElementById('signup-email').value;
-const password = document.getElementById('signup-password').value;
+const name = document.getElementById('signupName').value;
+const email = document.getElementById('signupEmail').value;
+const password = document.getElementById('signupPassword').value;
 
 
     //constructing object 

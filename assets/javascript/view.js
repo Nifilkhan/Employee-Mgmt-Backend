@@ -209,7 +209,7 @@ async function editEmployeedetails() {
       };
 
       try {
-        const response = await fetch(`http://localhost:6001/api/employes/id}`, {
+        const response = await fetch(`http://localhost:6001/api/employes/${id}`, {
           method: "PUT",
           headers: {
             "content-type": "application/json",
