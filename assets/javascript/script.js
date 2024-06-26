@@ -137,6 +137,8 @@ function pagination() {
 addFetch(currentPage);
 
 
+
+
 function addEmployee() {
   var addEmployeePopup = document.getElementById("addEmployee");
   var overlay = document.getElementById("overlay");
